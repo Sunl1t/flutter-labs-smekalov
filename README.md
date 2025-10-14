@@ -20,13 +20,17 @@ MVP фокусируется на базовом кликинге, магази�
 -Центральное изображение текущего котенка.
 -Счетчики кликов и монеток.
 Нижняя навигация: кнопки "Магазин" и "Коллекция".
+
 ![Screenshot](https://github.com/Sunl1t/flutter-labs-smekalov/blob/master/1.png)
-2. Экран магазина (ShopScreen):
+
+3. Экран магазина (ShopScreen):
 -Кнопка "Обменять клики".
 -Список доступных скинов/котят (GridView или ListView с изображениями из API).
 -Для каждого: Название, цена, кнопка "Купить" (если хватает монет).
+
 ![Screenshot](https://github.com/Sunl1t/flutter-labs-smekalov/blob/master/2.png)
-3. Экран коллекции (CollectionScreen) (дополнительный для демонстрации):
+
+4. Экран коллекции (CollectionScreen) (дополнительный для демонстрации):
 -Список купленных котят.
 
 ![Screenshot](https://github.com/Sunl1t/flutter-labs-smekalov/blob/master/3.png)
