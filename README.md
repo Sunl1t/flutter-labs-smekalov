@@ -1,4 +1,5 @@
 ### Описание
+![Mars](https://github.com/Sunl1t/flutter-labs-smekalov/blob/master/head.jpg)
 Kitten Clicker — мобильное приложение на Flutter, вдохновленное idle-играми. 
 Пользователь кликает на изображение котенка, чтобы заработать "клики", которые можно обменять на монетки. 
 Монетки тратятся на покупку скинов (разных изображений котенка) или новых котят в коллекцию. 
@@ -15,20 +16,20 @@ MVP фокусируется на базовом кликинге, магази�
 Временное хранение данных в памяти, затем в SharedPreferences.
 
 ### Структура экранов
-
 1. Главный экран (HomeScreen):
 -Центральное изображение текущего котенка.
 -Счетчики кликов и монеток.
 Нижняя навигация: кнопки "Магазин" и "Коллекция".
-https://github.com/Sunl1t/flutter-labs-smekalov/1.png
+![Screenshot](https://github.com/Sunl1t/flutter-labs-smekalov/blob/master/1.png)
 2. Экран магазина (ShopScreen):
 -Кнопка "Обменять клики".
 -Список доступных скинов/котят (GridView или ListView с изображениями из API).
 -Для каждого: Название, цена, кнопка "Купить" (если хватает монет).
-https://github.com/Sunl1t/flutter-labs-smekalov/2.png
+![Screenshot](https://github.com/Sunl1t/flutter-labs-smekalov/blob/master/2.png)
 3. Экран коллекции (CollectionScreen) (дополнительный для демонстрации):
 -Список купленных котят.
-https://github.com/Sunl1t/flutter-labs-smekalov/3.png
+
+![Screenshot](https://github.com/Sunl1t/flutter-labs-smekalov/blob/master/3.png)
 ### Навигация
 Используется MaterialApp с Navigator для переходов.
 BottomNavigationBar на главном экране для переключения между "Магазин" и "Коллекция" (без полного перехода, stateful widget).
