@@ -4,12 +4,14 @@ class ShopItemCard extends StatelessWidget {
   final String imagePath;
   final String name;
   final int price;
+  final bool isPurchased;
 
   const ShopItemCard({
     Key? key,
     required this.imagePath,
     required this.name,
     required this.price,
+    this.isPurchased = false,
   }) : super(key: key);
 
   @override
@@ -55,7 +57,19 @@ class ShopItemCard extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: isPurchased
+                ? const Text(
+              'Куплено',
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.green,
+                fontWeight: FontWeight.bold,
+              ),
+            )
+                : const SizedBox(height: 16),
+          ),
         ],
       ),
     );

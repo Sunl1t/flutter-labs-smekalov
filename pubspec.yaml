@@ -30,14 +30,46 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  floating_animation: ^1.1.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
 
+  # State management (MVVM)
+  provider: ^6.1.2
+
+  #для апишки
+  http: ^1.2.0
+
+  # хранилище
+  shared_preferences: ^2.0.0
+
+  # Audio player для звуков
+  audioplayers: ^6.1.0
+
+  # Кэширование изображений из API
+  cached_network_image: ^3.3.1
+  flutter_native_splash: ^2.4.7
+  flutter_launcher_icons: ^0.14.4
+
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icons/app_icon.png"
+
+
+flutter_native_splash:
+  image: assets/icons/splash.png
+  android: true
+  ios: true
+  android_gravity: center
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -57,11 +89,12 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
-  # To add assets to your application, add an assets section, like this:
+
+
   assets:
     - assets/images/kittens/
     - assets/images/skins/
-
+    - assets/sounds/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 
