@@ -1,11 +1,11 @@
 class Skin {
   final String id;
   final String name;
-  final String imagePath; // Локальный путь к изображению
+  final String imagePath;
   final int price;
   final bool isPurchased;
   final bool isActive;
-
+  /// Конструктор класса
   Skin({
     required this.id,
     required this.name,
@@ -14,7 +14,7 @@ class Skin {
     this.isPurchased = false,
     this.isActive = false,
   });
-
+  /// Создание нового объекта на основе текущего
   Skin copyWith({
     String? id,
     String? name,
@@ -32,7 +32,7 @@ class Skin {
       isActive: isActive ?? this.isActive,
     );
   }
-
+  /// Преобразование в объект
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -43,7 +43,7 @@ class Skin {
       'isActive': isActive,
     };
   }
-
+  /// Фабричный конструктор
   factory Skin.fromJson(Map<String, dynamic> json) {
     return Skin(
       id: json['id'] as String,

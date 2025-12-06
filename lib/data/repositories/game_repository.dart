@@ -10,7 +10,7 @@ class GameRepository {
   GameRepository({StorageService? storageService})
       : _storageService = storageService ?? StorageService();
 
-  /// Загрузить сохраненное состояние игры
+  /// Загрузка сохраненного состояния игры
   Future<GameState?> loadGameState() async {
     return await _storageService.loadGameState();
   }
@@ -111,12 +111,12 @@ class GameRepository {
     );
   }
 
-  /// Проверить, есть ли сохраненная игра
+  /// Проверка есть ли сохраненная игра
   Future<bool> hasSavedGame() async {
     return await _storageService.hasSavedGame();
   }
 
-  /// Очистить сохраненное состояние
+  /// Очистка сохраненного состояния
   Future<void> clearSavedGame() async {
     await _storageService.clearGameState();
   }

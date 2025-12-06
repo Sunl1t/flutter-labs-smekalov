@@ -1,11 +1,11 @@
 class Kitten {
   final String id;
   final String name;
-  final String imagePath; // Локальный путь к изображению
+  final String imagePath;
   final int price;
   final bool isPurchased;
   final bool isActive;
-
+  /// Конструктор класса
   Kitten({
     required this.id,
     required this.name,
@@ -14,7 +14,7 @@ class Kitten {
     this.isPurchased = false,
     this.isActive = false,
   });
-
+  /// Создание нового объекта на основе текущего
   Kitten copyWith({
     String? id,
     String? name,
@@ -32,7 +32,7 @@ class Kitten {
       isActive: isActive ?? this.isActive,
     );
   }
-
+  /// Преобразование в объект
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -43,7 +43,7 @@ class Kitten {
       'isActive': isActive,
     };
   }
-
+  /// Фабричный конструктор
   factory Kitten.fromJson(Map<String, dynamic> json) {
     return Kitten(
       id: json['id'] as String,

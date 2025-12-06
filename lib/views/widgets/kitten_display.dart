@@ -88,15 +88,25 @@ class _KittenDisplayState extends State<KittenDisplay>
       );
     }
 
-    // ПРИОРИТЕТ 2: Если локального пути нет, но есть URL из API - используем его
+    // ПРИОРИТЕТ 2: URL из API - ЗДЕСЬ используем CachedNetworkImage
     if (widget.imageUrl != null && widget.imageUrl!.isNotEmpty) {
       return CachedNetworkImage(
         imageUrl: widget.imageUrl!,
         fit: BoxFit.cover,
+        // ДОБАВЬ ЭТИ ПАРАМЕТРЫ для оптимизации:
+        memCacheWidth: 300,  // Ограничение размера в оперативной памяти
+        memCacheHeight: 300,
+        maxWidthDiskCache: 600,  // Ограничение на диске
+        maxHeightDiskCache: 600,
+        fadeInDuration: const Duration(milliseconds: 300), // Плавное появление
+        fadeOutDuration: const Duration(milliseconds: 100),
         placeholder: (context, url) => Container(
           color: Colors.grey[300],
           child: const Center(
-            child: CircularProgressIndicator(),
+            child: CircularProgressIndicator(
+              color: Colors.purple,
+              strokeWidth: 3,
+            ),
           ),
         ),
         errorWidget: (context, url, error) => Container(
@@ -128,48 +138,6 @@ class _KittenDisplayState extends State<KittenDisplay>
       },
     );
   }
-
-  // Widget _buildImage() {
-  //   // Если есть URL из API - используем его
-  //   if (widget.imageUrl != null) {
-  //     return CachedNetworkImage(
-  //       imageUrl: widget.imageUrl!,
-  //       fit: BoxFit.cover,
-  //       placeholder: (context, url) => Container(
-  //         color: Colors.grey[300],
-  //         child: const Center(
-  //           child: CircularProgressIndicator(),
-  //         ),
-  //       ),
-  //       errorWidget: (context, url, error) => Container(
-  //         color: Colors.grey[300],
-  //         child: const Icon(
-  //           Icons.pets,
-  //           size: 100,
-  //           color: Colors.grey,
-  //         ),
-  //       ),
-  //     );
-  //   }
-  //
-  //   // Иначе используем локальное изображение
-  //   return Image.asset(
-  //     widget.imagePath ?? 'assets/images/kittens/kitten_default.jpg',
-  //     fit: BoxFit.cover,
-  //     errorBuilder: (context, error, stackTrace) {
-  //       return Container(
-  //         color: Colors.grey[300],
-  //         child: const Center(
-  //           child: Icon(
-  //             Icons.pets,
-  //             size: 100,
-  //             color: Colors.grey,
-  //           ),
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
 
   @override
   Widget build(BuildContext context) {

@@ -17,7 +17,19 @@ class SoundRepository {
     'sounds/meow7.mp3',
     'sounds/meow8.mp3',
     'sounds/meow9.mp3',
+    'sounds/meow10.mp3',
+    'sounds/meow12.mp3',
+    'sounds/meow13.mp3',
+    'sounds/meow14.mp3',
+    'sounds/meow15.mp3',
+    'sounds/meow16.mp3',
+    'sounds/meow11.mp3',
   ];
+
+  SoundRepository() {
+    // Настройка плеера для быстрой работы
+    _audioPlayer.setReleaseMode(ReleaseMode.stop);
+  }
 
   /// Воспроизвести случайный звук котенка
   Future<void> playRandomMeow() async {
@@ -30,7 +42,13 @@ class SoundRepository {
 
       // Воспроизводим локальный звук
       await _audioPlayer.play(AssetSource(soundPath));
-      print('Playing meow sound: $soundPath');
+
+      // Автоматически останавливаем через 2 секунды
+      Future.delayed(const Duration(seconds: 2), () {
+        _audioPlayer.stop();
+      });
+
+      // print('Playing meow sound: $soundPath');
     } catch (e) {
       print('Error playing meow sound: $e');
     }
