@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kitticlicker/utils/debouncer.dart';
 import '../data/models/game_state.dart';
 import '../data/models/kitten.dart';
 import '../data/models/skin.dart';
@@ -6,7 +7,7 @@ import '../data/repositories/game_repository.dart';
 import '../data/repositories/sound_repository.dart';
 import '../data/repositories/cat_repository.dart';
 
-/// ViewModel для управления игровой логикой (MVVM)
+/// ViewModel для управления игровой логикой
 class GameViewModel extends ChangeNotifier {
   final GameRepository _gameRepository;
   final SoundRepository _soundRepository;
@@ -22,7 +23,7 @@ class GameViewModel extends ChangeNotifier {
 
   bool _isLoading = true;
   String? _error;
-  String? _currentApiCatImage; // Текущее изображение из API
+  String? _currentApiCatImage;
 
   GameViewModel({
     GameRepository? gameRepository,
@@ -34,7 +35,7 @@ class GameViewModel extends ChangeNotifier {
     _initializeGame();
   }
 
-  // Getters
+  /// Геттеры
   GameState get state => _state;
   bool get isLoading => _isLoading;
   String? get error => _error;
@@ -64,7 +65,7 @@ class GameViewModel extends ChangeNotifier {
         print('Created new game state');
       }
 
-      // Загружаем сохраненное изображение из API (если есть)
+      /// Загружаем сохраненное изображение из API (если есть)
       _currentApiCatImage = await _catRepository.loadCurrentCatImage();
 
       _isLoading = false;
@@ -76,14 +77,13 @@ class GameViewModel extends ChangeNotifier {
       print(_error);
     }
   }
-
+  final _debouncer = Debouncer(milliseconds: 500);
   /// Клик по котенку (с воспроизведением звука и сменой изображения)
   Future<void> incrementClicks() async {
     _state = _state.copyWith(clicks: _state.clicks + 1);
     _saveState();
     notifyListeners();
 
-    // Воспроизводим локальный звук котенка
     await _soundRepository.playRandomMeow();
 
     // Если активен стандартный котенок (Пылинка) и нет скина - меняем изображение
@@ -91,18 +91,22 @@ class GameViewModel extends ChangeNotifier {
     final activeSkin = getActiveSkin();
 
     if (activeKitten?.id == 'kitten_0' && activeSkin == null) {
+      _debouncer.run(() async {
       _isLoadingImage = true;
-      // Загружаем новое случайное изображение из API
+      notifyListeners();
+
       try {
         _currentApiCatImage = await _catRepository.fetchRandomCatImage();
-        notifyListeners();
+
       } catch (e) {
         print('Error loading new cat image: $e');
+        _isLoadingImage = false;
+        notifyListeners();
       }
-    }
-  }
+    });
+  }}
 
-  /// Обмен кликов на монетки (10 кликов = 1 монетка)
+  /// Обмен кликов на монетки
   bool exchangeClicksForCoins() {
     if (_state.clicks >= 10) {
       final coinsToAdd = _state.clicks ~/ 10;
@@ -179,7 +183,7 @@ class GameViewModel extends ChangeNotifier {
       activeKittenId: kittenId,
     );
 
-    // При смене котенка сбрасываем изображение из API
+    /// При смене котенка сброс изображения из API
     if (kittenId != 'kitten_0') {
       _currentApiCatImage = null;
     }
@@ -244,42 +248,27 @@ class GameViewModel extends ChangeNotifier {
   /// Получить текущий путь к изображению или URL
   /// Возвращает null если нужно использовать изображение из API
   String? getCurrentImagePath() {
-    // // Если есть активный скин - показываем его
-    // final activeSkin = getActiveSkin();
-    // if (activeSkin != null) {
-    //   return activeSkin.imagePath;
-    // }
-    //
-    // // Если активен стандартный котенок и есть изображение из API - вернем null
-    // final activeKitten = getActiveKitten();
-    // if (activeKitten?.id == 'kitten_0' && _currentApiCatImage != null) {
-    //   return null; // Будем использовать изображение из API
-    // }
-    //
-    // // Иначе возвращаем локальное изображение котенка
-    // return activeKitten?.imagePath ?? 'assets/images/kittens/kitten_default.png';
-    // ПРИОРИТЕТ 1: Если есть активный скин - ВСЕГДА показываем его
+    // 1: если есть активный скин - показ его
     final activeSkin = getActiveSkin();
     if (activeSkin != null) {
       print('Using skin image: ${activeSkin.imagePath}');
       return activeSkin.imagePath;
     }
 
-    // ПРИОРИТЕТ 2: Если активен любой купленный котенок (не Пылинка) - показываем его
+    // 2: если активен любой купленный котенок - показ
     final activeKitten = getActiveKitten();
     if (activeKitten != null && activeKitten.id != 'kitten_0') {
       print('Using kitten image: ${activeKitten.imagePath}');
       return activeKitten.imagePath;
     }
 
-    // ПРИОРИТЕТ 3: Если активна Пылинка И есть API-картинка - возвращаем null
-    // (KittenDisplay покажет API-картинку)
+    // 3: если активна Пылинка и есть API - возвращаем null
     if (activeKitten?.id == 'kitten_0' && _currentApiCatImage != null) {
       print('Using API image for Пылинка');
       return null;
     }
 
-    // ПРИОРИТЕТ 4: Пылинка без API-картинки - показываем дефолтное изображение
+    // 4: Пылинка без API - показ дефолтного изображения
     print('Using default Пылинка image');
     return activeKitten?.imagePath ?? 'assets/images/kittens/kitten_default.jpg';
   }
@@ -325,7 +314,7 @@ class GameViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
-
+  /// Освобождение ресурсов
   @override
   void dispose() {
     _soundRepository.dispose();

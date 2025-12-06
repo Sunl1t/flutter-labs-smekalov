@@ -2,14 +2,19 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 class FloatingHeartsBackground extends StatefulWidget {
-  const FloatingHeartsBackground({Key? key}) : super(key: key);
+  final bool isPaused;
+
+  const FloatingHeartsBackground({
+    Key? key,
+    this.isPaused = false,
+  }) : super(key: key);
 
   @override
   State<FloatingHeartsBackground> createState() => _FloatingHeartsBackgroundState();
 }
 
 class _FloatingHeartsBackgroundState extends State<FloatingHeartsBackground>
-    with TickerProviderStateMixin {
+    with SingleTickerProviderStateMixin {
   final List<_FloatingHeart> _hearts = [];
   final Random _random = Random();
   late AnimationController _controller;
@@ -18,44 +23,48 @@ class _FloatingHeartsBackgroundState extends State<FloatingHeartsBackground>
   void initState() {
     super.initState();
 
-    // Создаем контроллер анимации
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 50),
     )..repeat();
 
-    // Создаем начальные сердечки
-    for (int i = 0; i < 15; i++) {
-      _addHeart();
+    // Создаем начальные сердечки по всему экрану
+    for (int i = 0; i < 20; i++) {
+      _addHeart(randomY: true);
     }
 
-    // Обновляем позиции сердечек
     _controller.addListener(() {
-      setState(() {
-        for (var heart in _hearts) {
-          heart.update();
-        }
+      if (!widget.isPaused) {
+        setState(() {
+          for (var heart in _hearts) {
+            heart.update();
+          }
 
-        // Удаляем сердечки, которые вышли за экран
-        _hearts.removeWhere((heart) => heart.y < -50);
+          _hearts.removeWhere((heart) => heart.y < -0.1);
 
-        // Добавляем новые сердечки
-        if (_hearts.length < 15 && _random.nextDouble() < 0.3) {
-          _addHeart();
-        }
-      });
+          // Постоянно добавляем новые сердечки
+          if (_hearts.length < 20 && _random.nextDouble() < 0.4) {
+            _addHeart();
+          }
+        });
+      }
     });
   }
 
-  void _addHeart() {
-    final emojis = ['💜', '💕', '💖', '💗', '💓'];
+  void _addHeart({bool randomY = false}) {
+    final emojis = ['💜', '💕', '💖', '💗', '💓', '🩷', '💝'];
+
     _hearts.add(_FloatingHeart(
       x: _random.nextDouble(),
-      y: 1.0 + _random.nextDouble() * 0.5, // Начинаем снизу
-      speed: 0.003 + _random.nextDouble() * 0.005,
-      size: 20 + _random.nextDouble() * 25,
-      opacity: 0.3 + _random.nextDouble() * 0.4,
-      drift: (_random.nextDouble() - 0.5) * 0.0005,
+      y: randomY
+          ? _random.nextDouble() * 1.2
+          : 1.0 + _random.nextDouble() * 0.3,
+      speed: 0.002 + _random.nextDouble() * 0.004,
+      size: 15 + _random.nextDouble() * 20,
+      opacity: 0.2 + _random.nextDouble() * 0.4,
+      drift: (_random.nextDouble() - 0.5) * 0.0008,
+      rotation: _random.nextDouble() * 6.28,
+      rotationSpeed: (_random.nextDouble() - 0.5) * 0.02,
       emoji: emojis[_random.nextInt(emojis.length)],
     ));
   }
@@ -68,29 +77,35 @@ class _FloatingHeartsBackgroundState extends State<FloatingHeartsBackground>
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: _hearts.map((heart) {
-        return Positioned(
-          left: MediaQuery.of(context).size.width * heart.x,
-          top: MediaQuery.of(context).size.height * heart.y,
-          child: Opacity(
-            opacity: heart.opacity,
-            child: Text(
-              // '💜'
-              heart.emoji,
-              style: TextStyle(
-                fontSize: heart.size,
-                shadows: [
-                  Shadow(
-                    blurRadius: 10,
-                    color: Colors.purple.withOpacity(0.3),
+    return RepaintBoundary(
+      child: IgnorePointer(
+        child: Stack(
+          children: _hearts.map((heart) {
+            return Positioned(
+              left: MediaQuery.of(context).size.width * heart.x,
+              top: MediaQuery.of(context).size.height * heart.y,
+              child: Transform.rotate(
+                angle: heart.rotation,
+                child: Opacity(
+                  opacity: heart.opacity,
+                  child: Text(
+                    heart.emoji,
+                    style: TextStyle(
+                      fontSize: heart.size,
+                      shadows: [
+                        Shadow(
+                          blurRadius: 8,
+                          color: Colors.purple.withOpacity(0.3),
+                        ),
+                      ],
+                    ),
                   ),
-                ],
+                ),
               ),
-            ),
-          ),
-        );
-      }).toList(),
+            );
+          }).toList(),
+        ),
+      ),
     );
   }
 }
@@ -102,6 +117,8 @@ class _FloatingHeart {
   final double size;
   final double opacity;
   final double drift;
+  double rotation;
+  final double rotationSpeed;
   final String emoji;
 
   _FloatingHeart({
@@ -111,14 +128,16 @@ class _FloatingHeart {
     required this.size,
     required this.opacity,
     required this.drift,
+    required this.rotation,
+    required this.rotationSpeed,
     required this.emoji,
   });
 
   void update() {
-    y -= speed; // Движение вверх
-    x += drift; // Небольшое горизонтальное смещение
+    y -= speed;
+    x += drift;
+    rotation += rotationSpeed;
 
-    // Держим x в пределах экрана
     if (x < -0.1) x = -0.1;
     if (x > 1.1) x = 1.1;
   }

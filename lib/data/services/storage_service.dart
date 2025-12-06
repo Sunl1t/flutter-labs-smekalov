@@ -13,14 +13,14 @@ class StorageService {
       final prefs = await SharedPreferences.getInstance();
       final jsonString = json.encode(state.toJson());
       await prefs.setString(_gameStateKey, jsonString);
-      print('Game state saved successfully');
+      // print('Game state saved successfully');
     } catch (e) {
-      print('Error saving game state: $e');
+      // print('Error saving game state: $e');
       rethrow;
     }
   }
 
-  /// Загрузить состояние игры
+  /// Загрузка состояния игры
   Future<GameState?> loadGameState() async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -28,14 +28,14 @@ class StorageService {
 
       if (jsonString != null && jsonString.isNotEmpty) {
         final Map<String, dynamic> jsonMap = json.decode(jsonString);
-        print('Game state loaded successfully');
+        // print('Game state loaded successfully');
         return GameState.fromJson(jsonMap);
       }
 
-      print('No saved game state found');
+      // print('No saved game state found');
       return null;
     } catch (e) {
-      print('Error loading game state: $e');
+      // print('Error loading game state: $e');
       return null;
     }
   }
@@ -45,43 +45,43 @@ class StorageService {
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(_currentCatImageKey, imageUrl);
-      print('Current cat image saved: $imageUrl');
+      // print('Current cat image saved: $imageUrl');
     } catch (e) {
-      print('Error saving current cat image: $e');
+      // print('Error saving current cat image: $e');
     }
   }
 
-  /// Загрузить текущее изображение котенка из API
+  /// Загрузка текущего изображения котенка из API
   Future<String?> loadCurrentCatImage() async {
     try {
       final prefs = await SharedPreferences.getInstance();
       return prefs.getString(_currentCatImageKey);
     } catch (e) {
-      print('Error loading current cat image: $e');
+      // print('Error loading current cat image: $e');
       return null;
     }
   }
 
-  /// Очистить сохраненные данные
+  /// Очистка сохраненные данные
   Future<void> clearGameState() async {
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove(_gameStateKey);
       await prefs.remove(_currentCatImageKey);
-      print('Game state cleared successfully');
+      // print('Game state cleared successfully');
     } catch (e) {
-      print('Error clearing game state: $e');
+      // print('Error clearing game state: $e');
       rethrow;
     }
   }
 
-  /// Проверить, есть ли сохраненная игра
+  /// Проверка есть ли сохраненная игра
   Future<bool> hasSavedGame() async {
     try {
       final prefs = await SharedPreferences.getInstance();
       return prefs.containsKey(_gameStateKey);
     } catch (e) {
-      print('Error checking saved game: $e');
+      // print('Error checking saved game: $e');
       return false;
     }
   }

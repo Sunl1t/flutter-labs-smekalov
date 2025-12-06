@@ -25,7 +25,7 @@ class CatApiService {
       // Fallback изображение если API не отвечает
       return 'https://cdn2.thecatapi.com/images/0XYvRd7oD.jpg';
     } catch (e) {
-      print('Error fetching cat image: $e');
+      // print('Error fetching cat image: $e');
       return 'https://cdn2.thecatapi.com/images/0XYvRd7oD.jpg';
     }
   }
